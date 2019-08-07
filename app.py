@@ -39,6 +39,16 @@ def callback():
 def handle_message(event):
     msg = event.message.text
     reply = '我看不懂你說什麼'
+    if '你在嗎' in msg:
+        sticker_message = StickerSendMessage(
+            package_id='1',
+            sticker_id='1'
+        )
+        line_bot_api.reply_message(
+            event.reply_token,
+            sticker_message)
+        return
+
     if msg in ['hi', 'Hi']:
         reply = 'hi'
     elif msg == '你吃飯了嗎':
