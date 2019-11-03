@@ -24,7 +24,6 @@ def reply_text(token, id, txt):
 
     if 'diary' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
-    elif me['logs']['事由'] != 'finish':
         line_bot_api.reply_message(token,TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
         me['logs']['事由'] = txt
         dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
@@ -32,7 +31,7 @@ def reply_text(token, id, txt):
         print('資料紀錄:', me['logs'])
         logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
         gs.append_row(logs)
-    else:
+    elif me['logs']['事由'] == 'finish':
         users.remove(id)
 
 app = Flask(__name__)
