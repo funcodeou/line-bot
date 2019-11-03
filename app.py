@@ -41,9 +41,9 @@ def reply_text(token, id, txt):
                     MessageAction(label='不需要', text='不需要')
                 ])
 
-            temp_msg = TemplateSendMessage(alt_text='確認訊息',
-                                        template=queries)
-            line_bot_api.reply_message(token, temp_msg)
+            line_bot_api.reply_message(
+                token,
+                TextSendMessage(text="有什麼想說的呢？"))
             me['save'] = True # 開始紀錄訊息
         else:
             line_bot_api.reply_message(
