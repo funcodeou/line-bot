@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from model import sheet
 from datetime import datetime
+from dateutil import tz
 from linebot import (LineBotApi, WebhookHandler)
 from linebot.exceptions import (InvalidSignatureError)
 from linebot.models import (MessageEvent, TextMessage, TextSendMessage, StickerSendMessage)
@@ -24,11 +25,19 @@ def reply_text(token, id, txt):
 
     if 'dear' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="謝謝你，我很高興你告訴我。"))
+
         me['logs']['事由'] = txt.split('~')[1]
-        dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+
+        utc_zone = tz.gettz('UTC')
+        tw_zone = tz.gettz('Asia/Taipei')
+        utc = datetime.utcnow()
+        utc = utc.replace(tzinfo=utc_zone)
+        tw_time = utc.astimezone(tw_zone)
+        dt = tw_time.strftime('%Y/%m/%d %H:%M:%S')
         me['logs']['日期時間'] = dt
+
         print('資料紀錄:', me['logs'])
-        logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
+        logs = [ me['name'], me['logs']['日期時間'], me['logs']['事由'] ]
         gs.append_row(logs)
 
 
