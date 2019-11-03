@@ -1,4 +1,4 @@
-from model import sheet
+from model import guestbook
 from datetime import datetime
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -11,7 +11,6 @@ from linebot.models import (
     ButtonsTemplate
 )
 
-gs = sheet.GoogleSheet('googlesheet','LINE線上日記')
 
 line_bot_api = LineBotApi('5J0K+ZR3bz8W+nQL7SYNBw/eNHDWJmXCsW+MDAr59n6bgw4m6EKLCxf9+8z3q+zRWQGtkPEQSkD1Fm8O1qqtd6V14nkpDxW3erd4JeCgenq9roEUKpOb7IeOvoQgfb2hbGn2zqaaBvKb6Lb3zsBhCgdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('2f2daefe643fc0bb589591acaca3b71e')
@@ -24,7 +23,7 @@ def check_user(id, name):
     if id not in users:
         users[id] = {
             'name':name,
-            'logs':{'日期時間':'', '經緯度':'', '地址':'', '事由':''},
+            'logs':{'name':'', 'e-mail':'', 'message':''},
             'save':False
         }
 
@@ -37,27 +36,14 @@ def reply_text(token, id, txt):
     if me['save']  == False:
         if 'diary' in txt:
             queries = ConfirmTemplate(
-                text=f"{me['name']} 您好，請問要紀錄日記地點嗎？",
+                text=f"{me['name']} 您好，請問要填e-mail嗎？",
                 actions=[
                     URIAction(
-                        label='回報地點',
-                        uri='line://nv/location'
+                        label='回報e-mail',
+                        text='不想填'
                     ),
                     MessageAction(label='不需要', text='不需要')
                 ])
-            # queries = ButtonsTemplate(
-            #     text=f"{me['name']}您好，請問要回報查修地點嗎？",
-            #     actions=[
-            #         URIAction(
-            #             label='回報地點',
-            #             uri='line://nv/location'
-            #         ),
-            #         MessageAction(label='不需要', text='不需要'),
-            #         URIAction(
-            #             label='前往swf.com.tw網站',
-            #             uri='https://swf.com.tw/'
-            #         )
-            #     ])
 
             temp_msg = TemplateSendMessage(alt_text='確認訊息',
                                         template=queries)
@@ -72,20 +58,16 @@ def reply_text(token, id, txt):
             line_bot_api.reply_message(
                 token,
                 TextSendMessage(text="好的，我想聽聽您現在的想法。"))
-        elif me['logs']['事由'] == '':
+        elif me['logs']['message'] == '':
             line_bot_api.reply_message(
                 token,
                 TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
-            me['logs']['事由'] = txt  # 儲存事由
-            # 日期要設置成台北時間
-            dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            me['logs']['日期時間'] = dt
-
+            me['logs']['message'] = txt
 
             print('資料紀錄:', me['logs'])
-            logs = [id, me['name'], me['logs']['日期時間'],
-                        me['logs']['經緯度'], me['logs']['地址'], me['logs']['事由']]
-            gs.append_row(logs)
+            logs = [id, me['name'], me['logs']['name'],
+                    me['logs']['e-mail'], me['logs']['message']]
+
             me['save'] = False   # 紀錄完畢
 
 @app.route('/')
