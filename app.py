@@ -23,8 +23,8 @@ def reply_text(token, id, txt):
     me = users[id]
 
     if 'dear' in txt:
-        line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
-        me['logs']['事由'] = txt.split('/')[1]
+        line_bot_api.reply_message(token,TextSendMessage(text="謝謝你，我很高興你告訴我。"))
+        me['logs']['事由'] = txt.split('~')[1]
         dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         me['logs']['日期時間'] = dt
         print('資料紀錄:', me['logs'])
