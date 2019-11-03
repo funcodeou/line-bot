@@ -37,7 +37,7 @@ def reply_text(token, id, txt):
     if me['save']  == False:
         if 'diary' in txt:
             queries = ConfirmTemplate(
-                text=f"{me['name']}您好，請問要紀錄日記地點嗎？",
+                text=f"{me['name']} 您好，請問要紀錄日記地點嗎？",
                 actions=[
                     URIAction(
                         label='回報地點',
@@ -80,12 +80,13 @@ def reply_text(token, id, txt):
             # 日期要設置成台北時間
             dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
             me['logs']['日期時間'] = dt
-            me['save'] = False   # 紀錄完畢
+
 
             print('資料紀錄:', me['logs'])
             logs = [id, me['name'], me['logs']['日期時間'],
                         me['logs']['經緯度'], me['logs']['地址'], me['logs']['事由']]
-            #gs.append_row(logs)
+            gs.append_row(logs)
+            me['save'] = False   # 紀錄完畢
 
 @app.route('/')
 def index():
