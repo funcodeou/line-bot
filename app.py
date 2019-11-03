@@ -85,7 +85,7 @@ def reply_text(token, id, txt):
             print('資料紀錄:', me['logs'])
             logs = [id, me['name'], me['logs']['日期時間'],
                         me['logs']['經緯度'], me['logs']['地址'], me['logs']['事由']]
-            gs.append_row(logs)
+            #gs.append_row(logs)
 
 @app.route('/')
 def index():
