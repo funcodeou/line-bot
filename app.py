@@ -24,10 +24,10 @@ def reply_text(token, id, txt):
     if 'diary' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
 
-def record_text(token, id, txt):
+def record_text(token, id, txt2):
     while record:
-        if txt != finish:
-            me['logs']['事由'] = txt
+        if txt2 != finish:
+            me['logs']['事由'] = txt2
             dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
             me['logs']['日期時間'] = dt
             print('資料紀錄:', me['logs'])
@@ -68,8 +68,8 @@ def handle_message(event):
     txt=event.message.text
     reply_text(event.reply_token, _id, txt)
 
-    txt=event.message.text
-    record_text(event.reply_token, _id, txt)
+    txt2=event.message.text
+    record_text(event.reply_token, _id, txt2)
 
 
 
