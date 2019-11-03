@@ -21,19 +21,14 @@ def check_user(id, name):
 def reply_text(token, id, txt):
     global users
     me = users[id]
-    if 'diary' in txt:
-        line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
-
-def record_text(token, id, txt2):
-    while record:
-        if txt2 != finish:
-            me['logs']['事由'] = txt2
-            dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            me['logs']['日期時間'] = dt
-            print('資料紀錄:', me['logs'])
-            logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
-            gs.append_row(logs)
-            line_bot_api.reply_message(token,TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
+    line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
+def record_text(token, id, txt):
+    me['logs']['事由'] = txt
+    dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    me['logs']['日期時間'] = dt
+    print('資料紀錄:', me['logs'])
+    logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
+    gs.append_row(logs)
 
 
 app = Flask(__name__)
@@ -66,12 +61,10 @@ def handle_message(event):
     check_user(_id, _name)
 
     txt=event.message.text
-    reply_text(event.reply_token, _id, txt)
-
-    txt2=event.message.text
-    record_text(event.reply_token, _id, txt2)
-
-
+    if 'diary' in txt:
+        reply_text(event.reply_token, _id, txt)
+    elif:
+        record_text(event.reply_token, _id, txt)
 
 if __name__ == "__main__":
     app.run()
