@@ -1,20 +1,49 @@
 from flask import Flask, request, abort
+from model import sheet
+from datetime import datetime
+from linebot import (LineBotApi, WebhookHandler)
+from linebot.exceptions import (InvalidSignatureError)
+from linebot.models import (MessageEvent, TextMessage, TextSendMessage, StickerSendMessage)
 
-from linebot import (
-    LineBotApi, WebhookHandler
-)
-from linebot.exceptions import (
-    InvalidSignatureError
-)
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, StickerSendMessage
-)
-
-app = Flask(__name__)
+gs = sheet.GoogleSheet('googlesheet','LINE線上日記')
 
 line_bot_api = LineBotApi('5J0K+ZR3bz8W+nQL7SYNBw/eNHDWJmXCsW+MDAr59n6bgw4m6EKLCxf9+8z3q+zRWQGtkPEQSkD1Fm8O1qqtd6V14nkpDxW3erd4JeCgenq9roEUKpOb7IeOvoQgfb2hbGn2zqaaBvKb6Lb3zsBhCgdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('2f2daefe643fc0bb589591acaca3b71e')
 
+users = {}
+
+def check_user(id, name):
+    global users
+
+    if id not in users:
+        users[id] = {
+            'name':name,
+            'logs':{'日期時間':'', '經緯度':'', '地址':'', '事由':''},
+            'save':True
+        }
+
+def reply_text(token, id, txt):
+    global users
+    me = users[id]
+
+    if me['save']  == True
+        if me['logs']['事由'] == '':
+            line_bot_api.reply_message(
+                token,
+                TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
+            me['logs']['事由'] = txt  # 儲存事由
+            # 日期要設置成台北時間
+            dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+            me['logs']['日期時間'] = dt
+
+            print('資料紀錄:', me['logs'])
+            logs = [id, me['name'], me['logs']['日期時間'],
+                   , me['logs']['事由']]
+            gs.append_row(logs)
+            me['save'] = False   # 紀錄完畢
+
+
+app = Flask(__name__)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -35,32 +64,16 @@ def callback():
     return 'OK'
 
 
+# 處理文字訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    msg = event.message.text
-    reply = '我看不懂你說什麼'
-    if '你在嗎' in msg:
-        sticker_message = StickerSendMessage(
-            package_id='1',
-            sticker_id='1'
-        )
-        line_bot_api.reply_message(
-            event.reply_token,
-            sticker_message)
-        return
-
-    if msg in ['hi', 'Hi']:
-        reply = 'hi'
-    elif msg == '你吃飯了嗎':
-        reply = '還沒耶'
-    elif msg == '你是誰':
-        reply ='我是機器人'
-    elif '訂位' in msg:
-        reply = '您想訂位，是嗎?'
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply))
+    _id = event.source.user_id
+    profile = line_bot_api.get_profile(_id)
+    # 紀錄用戶資料
+    _name = profile.display_name
+    check_user(_id, _name)
+    txt=event.message.text
+    reply_text(event.reply_token, _id, txt)
 
 
 if __name__ == "__main__":
