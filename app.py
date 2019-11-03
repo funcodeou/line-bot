@@ -40,6 +40,24 @@ def reply_text(token, id, txt):
         logs = [ me['name'], me['logs']['日期時間'], me['logs']['事由'] ]
         gs.append_row(logs)
 
+    if 'bill' in txt:
+        line_bot_api.reply_message(token,TextSendMessage(text="好的，我幫您記錄下來了。"))
+
+        me['logs']['費用'] = txt.split('.')[2]
+        me['logs']['項目'] = txt.split('.')[1]
+
+        utc_zone = tz.gettz('UTC')
+        tw_zone = tz.gettz('Asia/Taipei')
+        utc = datetime.utcnow()
+        utc = utc.replace(tzinfo=utc_zone)
+        tw_time = utc.astimezone(tw_zone)
+        dt = tw_time.strftime('%Y/%m/%d %H:%M:%S')
+        me['logs']['日期時間'] = dt
+
+        print('資料紀錄:', me['logs'])
+        logs = [ me['name'], me['logs']['日期時間'], me['logs']['項目'], me['logs']['費用'] ]
+        gs.append_row(logs)
+
 
 app = Flask(__name__)
 
