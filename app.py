@@ -22,9 +22,9 @@ def reply_text(token, id, txt):
     global users
     me = users[id]
 
-    if 'diary' in txt:
+    if 'dear' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
-        me['logs']['事由'] = txt.split(',')[1]
+        me['logs']['事由'] = txt.split('')[1]
         dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         me['logs']['日期時間'] = dt
         print('資料紀錄:', me['logs'])
