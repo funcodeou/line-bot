@@ -1,0 +1,45 @@
+Step 1: 註冊Line-Bot
+
+Line Message API
+- Create a new provider
+- Build a new channel(channel access token頻道存取代碼/channel secret頻道密鑰)
+
+--------------------------------------------------------------------------------------
+Step 2: 建立GitHub專案
+
+GitHub
+- Create a Line-Bot project
+
+Line-Bot-SDK(GitHub)
+- Paste (channel access token頻道存取代碼/channel secret頻道密鑰) to this code
+- Write you code
+- upload to GitHub
+> CMD:
+$ git add app.py
+$ git commit -m "add new func"
+$ git push origin master
+
+Line Message API
+- Use webhooks -> Enabled
+- Webhook URL -> https://(Heroku Website)/callback #　先去註冊Heroku再回來貼上
+
+--------------------------------------------------------------------------------------
+Step 3: 註冊Heroku
+Heroku -> Python -> Set up -> Download Heroku CLI # 可以透過CMD操作Heroku
+CMD:
+(heroku login) -> 輸入註冊帳號信箱和密碼
+
+Create New App (必須是獨一無二的名字，不能跟其他人一樣)
+
+Step 4: 部署在Heroku運行程式
+
+進行部署(deploy using heroku git)
+
+> 在根目錄資料夾建立好兩個檔案：
+Procfile  -> 填入 web gunicorn app:app    # 無副檔名
+pip freeze -> requirements.txt            # 確認好必要的運行模組
+
+> CMD:
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
