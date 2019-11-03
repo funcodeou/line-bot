@@ -38,10 +38,6 @@ def reply_text(token, id, txt):
             queries = ConfirmTemplate(
                 text=f"{me['name']} 您好，請問要填e-mail嗎？",
                 actions=[
-                    URIAction(
-                        label='回報e-mail',
-                        text='不想填'
-                    ),
                     MessageAction(label='不需要', text='不需要')
                 ])
 
