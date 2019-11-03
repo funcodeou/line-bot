@@ -21,18 +21,20 @@ def check_user(id, name):
 def reply_text(token, id, txt):
     global users
     me = users[id]
-
     if 'diary' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="有什麼想要分享的事呢？"))
-        me['logs']['事由'] = txt
-        dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        me['logs']['日期時間'] = dt
-        print('資料紀錄:', me['logs'])
-        logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
-        gs.append_row(logs)
-        line_bot_api.reply_message(token,TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
-    elif me['logs']['事由'] == 'finish':
-        users.remove(id)
+
+def record_text(token, id, txt):
+    while record:
+        if txt != finish:
+            me['logs']['事由'] = txt
+            dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+            me['logs']['日期時間'] = dt
+            print('資料紀錄:', me['logs'])
+            logs = [id, me['name'], me['logs']['日期時間'], me['logs']['事由']]
+            gs.append_row(logs)
+            line_bot_api.reply_message(token,TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
+
 
 app = Flask(__name__)
 
@@ -62,8 +64,13 @@ def handle_message(event):
     profile = line_bot_api.get_profile(_id)
     _name = profile.display_name
     check_user(_id, _name)
+
     txt=event.message.text
     reply_text(event.reply_token, _id, txt)
+
+    txt=event.message.text
+    record_text(event.reply_token, _id, txt)
+
 
 
 if __name__ == "__main__":
