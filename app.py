@@ -105,35 +105,6 @@ def handle_message(event):
 
     reply_text(event.reply_token, _id, txt)
 
-# 處理地點訊息
-@handler.add(MessageEvent, message=LocationMessage)
-def handle_location_message(event):
-    global users
-
-    _id = event.source.user_id
-    me = users[_id]
-    addr=event.message.address    # 地址
-    lat=str(event.message.latitude)    # 緯度
-    lon=str(event.message.longitude)   # 經度
-
-    if addr is None:
-        msg=f'收到GPS座標：({lat}, {lon})\n謝謝您！'
-    else:
-        msg=f'收到GPS座標：({lat}, {lon})。\n地址：{addr}\n謝謝您！'
-
-    if  me['save']:
-        me['logs']['經緯度'] = f'({lat}, {lon})'
-        me['logs']['地址'] = addr
-
-        line_bot_api.reply_message(
-            event.reply_token, [
-                TextSendMessage(text=msg),
-                TextSendMessage(text='有什麼想說的呢？')
-        ])
-    else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=msg))
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
