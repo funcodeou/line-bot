@@ -26,11 +26,11 @@ def reply_text(token, id, txt):
     global users
     me = users[id]
 
-    if me['save']  == True
+    if 'diary' in txt:
         if me['logs']['事由'] == '':
             line_bot_api.reply_message(
                 token,
-                TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
+                TextSendMessage(text="有什麼想要分享的事呢？"))
             me['logs']['事由'] = txt  # 儲存事由
             # 日期要設置成台北時間
             dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
@@ -40,8 +40,7 @@ def reply_text(token, id, txt):
             logs = [id, me['name'], me['logs']['日期時間'],
                    , me['logs']['事由']]
             gs.append_row(logs)
-            me['save'] = False   # 紀錄完畢
-
+            line_bot_api.reply_message(token,TextSendMessage(text="我聽見了，也幫您記錄下來了！"))
 
 app = Flask(__name__)
 
