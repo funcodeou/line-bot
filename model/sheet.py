@@ -17,8 +17,7 @@ class GoogleSheet():
     '''
 
     def __init__(self, wks_name, wks_title=None, oauth='google_auth.json'):  # 請自行修改檔名
-        scope = ['https://spreadsheets.google.com/feeds',
-                 'https://www.googleapis.com/auth/drive']
+        scope = ['https://docs.google.com/spreadsheets/d/1wx78Sf_TVEsebY584WQO5-ihAmWT1dCAOEtbaP0Yv48/edit?usp=sharing',]
 
         try:  # 嘗試讀取憑證檔
             JSON_PATH = os.path.join(os.getcwd(), 'model', oauth)
