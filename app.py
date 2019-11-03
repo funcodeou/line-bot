@@ -6,7 +6,8 @@ from linebot import (LineBotApi, WebhookHandler)
 from linebot.exceptions import (InvalidSignatureError)
 from linebot.models import (MessageEvent, TextMessage, TextSendMessage, StickerSendMessage)
 
-gs = sheet.GoogleSheet('googlesheet','LINE線上日記')
+gs_diary = sheet.GoogleSheet('googlesheet','LINE線上日記')
+gs_bill = sheet.GoogleSheet('googlesheet','LINE線上帳單')
 
 line_bot_api = LineBotApi('5J0K+ZR3bz8W+nQL7SYNBw/eNHDWJmXCsW+MDAr59n6bgw4m6EKLCxf9+8z3q+zRWQGtkPEQSkD1Fm8O1qqtd6V14nkpDxW3erd4JeCgenq9roEUKpOb7IeOvoQgfb2hbGn2zqaaBvKb6Lb3zsBhCgdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('2f2daefe643fc0bb589591acaca3b71e')
@@ -38,7 +39,7 @@ def reply_text(token, id, txt):
 
         print('資料紀錄:', me['logs'])
         logs = [ me['name'], me['logs']['日期時間'], me['logs']['事由'] ]
-        gs.append_row(logs)
+        gs_diary.append_row(logs)
 
     if 'bill' in txt:
         line_bot_api.reply_message(token,TextSendMessage(text="好的，我幫您記錄下來了。"))
@@ -56,7 +57,7 @@ def reply_text(token, id, txt):
 
         print('資料紀錄:', me['logs'])
         logs = [ me['name'], me['logs']['日期時間'], me['logs']['項目'], me['logs']['費用'] ]
-        gs.append_row(logs)
+        gs_bill.append_row(logs)
 
 
 app = Flask(__name__)
