@@ -21,8 +21,8 @@ class GoogleSheet():
                  'https://www.googleapis.com/auth/drive']
 
         try:  # 嘗試讀取憑證檔
-            JSON_PATH = os.path.join(os.getcwd(), 'model', oauth)
-            cr = sac.from_json_keyfile_name(JSON_PATH, scope)
+            GDriveJSON = 'google_auth.json'
+            cr = sac.from_json_keyfile_name(GDriveJSON, scope)
         except Exception as e:
             print('無法開啟憑證檔', e)
             sys.exit(1)  # 關閉程式
